@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  profile   Profile?  
+  workouts  Workout[]
+  achievements Achievement[]
+}
+
+model Profile {
+  id     Int    @id @default(autoincrement())
+  bio    String
+  user   User   @relation(fields: [userId], references: [id])
+  userId Int    @unique
+}
+
+model Workout {
+  id         Int       @id @default(autoincrement())
+  name       String
+  date       DateTime
+  duration   Int       // in minutes
+  calories   Int
+  user       User      @relation(fields: [userId], references: [id])
+  userId     Int
+  exercises  Exercise[]
+  logs       Log[]
+}
+
+model Exercise {
+  id        Int       @id @default(autoincrement())
+  name      String
+  sets      Int
+  reps      Int
+  weight    Float
+  workout   Workout   @relation(fields: [workoutId], references: [id])
+  workoutId Int
+}
+
+model Log {
+  id        Int       @id @default(autoincrement())
+  content   String
+  date      DateTime
+  workout   Workout   @relation(fields: [workoutId], references: [id])
+  workoutId Int
+}
+
+model Achievement {
+  id        Int       @id @default(autoincrement())
+  title     String
+  date      DateTime
+  user      User      @relation(fields: [userId], references: [id])
+  userId    Int
+}
