@@ -49,12 +49,14 @@ model Exercise {
 }
 
 model Log {
-  id        Int       @id @default(autoincrement())
-  content   String
-  date      DateTime
-  workout   Workout   @relation(fields: [workoutId], references: [id])
-  workoutId Int
+  id           Int       @id @default(autoincrement())
+  content      String
+  date         DateTime
+  workoutId    Int
+  workout      Workout   @relation(fields: [workoutId], references: [id])
+  loggableType String    // Add this line
 }
+
 
 model Achievement {
   id        Int       @id @default(autoincrement())

@@ -15,10 +15,10 @@ export const getAllLogs = async (req: Request, res: Response) => {
 }
 
 export const createLog = async (req: Request, res: Response) => {
-  const { content, date, workoutId } = req.body
+  const { content, date, workoutId, loggableType } = req.body
   try {
     const newLog = await prisma.log.create({
-      data: { content, date, workout: { connect: { id: workoutId } } },
+      data: { content, date, loggableType, workout: { connect: { id: workoutId } } },
     })
     res.status(201).json(newLog)
   } catch (error: any) {
@@ -60,5 +60,24 @@ export const deleteLog = async (req: Request, res: Response) => {
     res.json({ message: 'Log deleted successfully' })
   } catch (error: any) {
     res.status(500).json({ message: 'Failed to delete log', error: error.message })
+  }
+}
+
+export const groupLogsByType = async (req: Request, res: Response) => {
+  try {
+    const groupedLogs = await prisma.log.groupBy({
+      by: ['loggableType'],
+      _count: {
+        id: true,
+      },
+      _min: {
+        content: true,
+        date: true,
+      },
+    })
+
+    res.json(groupedLogs)
+  } catch (error: any) {
+    res.status(500).json({ message: 'Failed to group logs', error: error.message })
   }
 }

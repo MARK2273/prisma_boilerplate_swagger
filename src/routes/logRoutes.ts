@@ -10,5 +10,6 @@ router.post('/', LogController.createLog)
 router.get('/:id', LogController.getLogById)
 router.put('/:id', LogController.updateLog)
 router.delete('/:id', LogController.deleteLog)
+router.get('/group/by-type', LogController.groupLogsByType) // Add this line
 
 export default router
